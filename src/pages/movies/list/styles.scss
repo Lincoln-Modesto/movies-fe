@@ -1,0 +1,42 @@
+.container-list {
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 0;
+}
+
+.content-title-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 20px;
+
+  @media (max-width: 380px) {
+    margin: 0 10px;
+  }
+}
+
+.content-card {
+  width: 100px;
+  display: flex;
+  justify-content: start;
+  text-align: center;
+}
+
+.container-list-button {
+  margin: 0 10px;
+}
+
+.container-list-description {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+.container-list-fallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  text-align: center;
+}

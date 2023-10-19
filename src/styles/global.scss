@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: #fafafa;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: #111;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  color: #222;
+}
+
+h3 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 500;
+  color: #333;
+}
+
+label {
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+  padding-bottom: 3px;
+}
+
+p {
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
+  color: #333;
+}
+
+span {
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+  color: #253af5;
+}
+
+#root {
+  width: 100%;
+  margin: 0 20px;
+}
+
+.app {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-home {
+  padding: 20px 0;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.base-button {
+  border: none;
+  border-radius: 8px;
+  background-color: #1d9918;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 4px 8px;
+  color: #fff;
+  width: 100%;
+  height: 45px;
+  text-align: center;
+  transition: 0.3s all ease-in;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      filter: brightness(1);
+    }
+  }
+
+  @media (max-width: 570px) {
+    max-width: 270px;
+  }
+}

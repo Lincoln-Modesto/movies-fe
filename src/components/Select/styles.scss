@@ -1,0 +1,31 @@
+.container-select {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    width: 100%;
+  }
+  
+  .base-select {
+    border-radius: 8px;
+    width: 520px;
+    height: 40px;
+    padding:  8px;
+    color: #333;
+    border: 1.5px solid #ccc;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
+  
+    &:focus {
+      outline: inherit;
+      border: 1.5px solid #1d9918;
+    }
+  
+    @media (max-width: 570px) {
+      width: 100%;
+      max-width: 270px;
+    }
+  }
+  
+  option {
+    font-size: 14px;
+    font-family: "Rubik", sans-serif;
+  }
