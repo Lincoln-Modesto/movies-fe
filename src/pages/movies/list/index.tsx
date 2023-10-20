@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IMovie } from "../../../models/movie";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { MovieState } from "../../../models/redux";
 import Loader from "../../../components/Loader";
 import Card from "../../../components/Card";
 import "./styles.scss";
+import { initializeMoviesAsync, initializeGendersAsync } from "../../../store/actions/actionCreators";
 
 const List: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const movies: readonly IMovie[] = useSelector(
     (state: MovieState) => state.movies,
@@ -22,6 +25,15 @@ const List: React.FC = () => {
       navigate(`/filme/${id}`);
     }
   };
+
+  useEffect(() => {
+    if(!movies.length) {
+      //@ts-ignore
+      dispatch(initializeMoviesAsync())
+      //@ts-ignore
+      dispatch(initializeGendersAsync())
+    }
+  }, [dispatch]);
 
   return (
     <>
@@ -49,8 +61,8 @@ const List: React.FC = () => {
                   key={i}
                   active={movie.active}
                   date={movie.date as string}
-                  id={movie.id}
-                  gender={movie.gender}
+                  id={movie.movieId}
+                  gender={movie.genderName}
                   name={movie.name}
                   onClick={callbackCard}
                 />

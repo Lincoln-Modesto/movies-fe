@@ -5,7 +5,7 @@ interface PropsCard {
   name: string;
   gender: string;
   date: string ;
-  active: number;
+  active: boolean;
   onClick: (number: number) => void;
 }
 
@@ -24,7 +24,7 @@ function Card(props: PropsCard) {
         <p>{props.gender}</p>
       </div>
       <div className="content-card-info">
-        <p>{props.active === 1 ? 'Ativo' : 'Inativo'}</p>
+        <p>{props.active ? 'Ativo' : 'Inativo'}</p>
       </div>
       <div className="content-card-hidden-responsively">
         <p>{props.date}</p>

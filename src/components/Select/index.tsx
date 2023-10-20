@@ -4,9 +4,9 @@ import { useState } from "react";
 import "./styles.scss";
 
 interface ISelectProps {
-  list: ISelectList[];
+  list: Array<ISelectList>;
   onChange: (value: any) => void;
-  value: string;
+  value: number;
   label: string;
   required: boolean;
   defaultOption: string;
@@ -14,9 +14,9 @@ interface ISelectProps {
   fallbackText?: string;
 }
 
-interface ISelectList {
-  value: string;
+export interface ISelectList {
   label: string;
+  value: number;
 }
 
 function Select(props: ISelectProps) {

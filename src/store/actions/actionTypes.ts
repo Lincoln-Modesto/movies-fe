@@ -1,3 +1,5 @@
+export const SET_INITIAL_MOVIES = 'SET_INITIAL_MOVIES'
+export const SET_INITIAL_GENDERS = 'SET_INITIAL_GENDERS'
 export const ADD_MOVIE = 'ADD_MOVIE'
 export const EDIT_MOVIE = 'EDIT_MOVIE'
 export const REMOVE_MOVIE = 'REMOVE_MOVIE'

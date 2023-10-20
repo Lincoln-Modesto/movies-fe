@@ -1,5 +1,5 @@
 export interface IGender {
-    id: number;
+    genderId: number;
     name: string;
     date: string | Date;
     active: number

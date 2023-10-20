@@ -13,11 +13,13 @@ import {
 import Loader from "../../../components/Loader";
 import arrow_back from "../../../assets/arrow_back.svg";
 import Input from "../../../components/Input";
-import Select from "../../../components/Select";
+import Select, { ISelectList } from "../../../components/Select";
 import "./styles.scss";
 import { toast } from "react-toastify";
 import { MovieState } from "../../../models/redux";
 import ModalConfirm from "../../../components/Modal";
+import { Api, HttpApiClientJSONResponse, endpoints } from "../../../api";
+import { IGender } from "../../../models/gender";
 
 interface IHandleChange {
   target: {
@@ -26,21 +28,8 @@ interface IHandleChange {
   };
 }
 
-const listGenders = [
-  { label: "Ação", value: "Ação" },
-  { label: "Aventura", value: "Aventura" },
-  { label: "Comédia", value: "Comédia" },
-  { label: "Documentário", value: "Documentário" },
-  { label: "Drama", value: "Drama" },
-  { label: "Fantasia", value: "Fantasia" },
-  { label: "Ficção Científica", value: "Ficção Científica" },
-  { label: "Romance", value: "Romance" },
-  { label: "Suspense", value: "Suspense" },
-  { label: "Terror", value: "Terror" },
-  { label: "Outro", value: "Outro" },
-];
-
 const Movie: React.FC = () => {
+  const api = new Api();
   const dispatch: Dispatch<any> = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -48,11 +37,12 @@ const Movie: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [actionDefault, setActionDefault] = useState<"save" | "edit">("save");
   const [state, setState] = useState<IMovie>({
-    id: 0,
+    movieId: 0,
     name: "",
     date: "",
-    active: 1,
-    gender: "",
+    active: true,
+    genderName: "",
+    genderId: 0,
   });
 
   const addingMovie = useCallback(
@@ -113,7 +103,7 @@ const Movie: React.FC = () => {
       addingMovie({
         ...state,
         date: new Date().toLocaleDateString(),
-        id: new Date().getTime(),
+        movieId: new Date().getTime(),
       });
 
       notifySuccess("cadastrado");
@@ -142,13 +132,18 @@ const Movie: React.FC = () => {
     shallowEqual
   );
 
+  const genders: ISelectList[] = useSelector(
+    (state: MovieState) => state.genders,
+    shallowEqual
+  );
+
   const openModal = () => {
     setModalVisible(true);
   };
 
   useEffect(() => {
     if (id) {
-      const movie = movies.find((movie) => movie.id === Number(id));
+      const movie = movies.find((movie) => movie.movieId === Number(id));
       if (movie) {
         setActionDefault("edit");
         setState(movie);
@@ -187,19 +182,19 @@ const Movie: React.FC = () => {
                 label="Gênero"
                 required={true}
                 key={2}
-                value={state.gender}
-                validation={state.gender?.trim() === "" ? false : true}
+                value={state.genderId}
+                validation={state.genderId === 0 ? false : true}
                 fallbackText="O Gênero é obrigatório"
                 defaultOption="Selecione o Gênero"
                 onChange={handleSelect}
-                list={listGenders}
+                list={genders}
               />
               <div className="container-button">
                 <button
                   className="base-button"
                   onClick={submit}
                   type="button"
-                  disabled={!state.name.trim() || !state.gender}
+                  disabled={!state.name.trim() || !state.genderId}
                 >
                   {actionDefault === "save" ? "Cadastrar" : "Editar"}
                 </button>

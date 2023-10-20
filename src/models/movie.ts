@@ -1,7 +1,8 @@
 export interface IMovie {
-  id: number;
+  movieId: number;
   name: string;
   date: string | Date;
-  active: number;
-  gender: string;
+  active: boolean;
+  genderName: string;
+  genderId: number;
 }

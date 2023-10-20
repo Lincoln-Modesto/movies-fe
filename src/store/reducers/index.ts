@@ -1,17 +1,11 @@
 import { IAction, MovieState } from "../../models/redux";
-import { ADD_MOVIE, EDIT_MOVIE, REMOVE_MOVIE } from "../actions/actionTypes";
+import { ADD_MOVIE, EDIT_MOVIE, REMOVE_MOVIE, SET_INITIAL_MOVIES, SET_INITIAL_GENDERS } from "../actions/actionTypes";
 import { IMovie } from "../../models/movie";
+import { ISelectList } from '../../components/Select';
 
 const initialState: MovieState = {
-  movies: [
-    {
-      active: 1,
-      date: "15/12/2023",
-      gender: "Terror",
-      id: 1,
-      name: "Sexta Feira 13",
-    },
-  ],
+  movies: [],
+  genders: []
 };
 
 const reducer = (
@@ -19,6 +13,16 @@ const reducer = (
   action: IAction
 ): MovieState => {
   switch (action.type) {
+    case SET_INITIAL_MOVIES:
+      return {
+        ...state,
+        movies: action.payload as IMovie[],
+      };
+    case SET_INITIAL_GENDERS:
+      return {
+        ...state,
+        genders: action.payload as ISelectList[],
+      };
     case ADD_MOVIE:
       return {
         ...state,
@@ -28,13 +32,13 @@ const reducer = (
       return {
         ...state,
         movies: [
-          ...state.movies.map((item) => item.id === (action.payload as IMovie).id ? (action.payload as IMovie) : item)
+          ...state.movies.map((item) => item.movieId === (action.payload as IMovie).movieId ? (action.payload as IMovie) : item)
         ]
       };
     }
     case REMOVE_MOVIE: {
       const updatedMovies: IMovie[] = state.movies.filter(
-        (movie) => movie.id !== (action.payload as number)
+        (movie) => movie.movieId !== (action.payload as number)
       );
       return {
         ...state,
