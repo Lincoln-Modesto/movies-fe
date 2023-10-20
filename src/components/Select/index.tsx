@@ -40,12 +40,12 @@ function Select(props: ISelectProps) {
         onChange={handleClick}
         className="base-select"
       >
-        <option value="" disabled>
+        <option value={0} disabled>
           {props.defaultOption}
         </option>
         {props.list.length &&
           props.list.map((state, i) => (
-            <option value={state.value} key={i}>
+            <option value={state.value} key={i} >
               {" "}
               {state.label}{" "}
             </option>

@@ -59,10 +59,10 @@ const List: React.FC = () => {
               movies.map((movie, i) => (
                 <Card
                   key={i}
-                  active={movie.active}
+                  active={movie.active as boolean}
                   date={movie.date as string}
                   id={movie.movieId}
-                  gender={movie.genderName}
+                  gender={movie.genderName as string}
                   name={movie.name}
                   onClick={callbackCard}
                 />

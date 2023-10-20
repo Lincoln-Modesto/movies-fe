@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
@@ -5,21 +6,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { IMovie } from "../../../models/movie";
 import { Dispatch } from "redux";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { notifySuccess } from "../../../utils/useToast";
+import Select, { ISelectList } from "../../../components/Select";
+import { MovieState } from "../../../models/redux";
 import {
-  addMovie,
-  editMovie,
-  removeMovie,
+  createMovieAsync,
+  deleteMovieAsync,
+  updateMovieAsync,
 } from "../../../store/actions/actionCreators";
 import Loader from "../../../components/Loader";
 import arrow_back from "../../../assets/arrow_back.svg";
 import Input from "../../../components/Input";
-import Select, { ISelectList } from "../../../components/Select";
-import "./styles.scss";
-import { toast } from "react-toastify";
-import { MovieState } from "../../../models/redux";
 import ModalConfirm from "../../../components/Modal";
-import { Api, HttpApiClientJSONResponse, endpoints } from "../../../api";
-import { IGender } from "../../../models/gender";
+import "./styles.scss";
 
 interface IHandleChange {
   target: {
@@ -29,7 +28,6 @@ interface IHandleChange {
 }
 
 const Movie: React.FC = () => {
-  const api = new Api();
   const dispatch: Dispatch<any> = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -39,24 +37,21 @@ const Movie: React.FC = () => {
   const [state, setState] = useState<IMovie>({
     movieId: 0,
     name: "",
-    date: "",
-    active: true,
-    genderName: "",
     genderId: 0,
   });
 
   const addingMovie = useCallback(
-    (movie: IMovie) => dispatch(addMovie(movie)),
+    (movie: IMovie) => dispatch(createMovieAsync(movie)),
     [dispatch]
   );
 
   const editingMovie = useCallback(
-    (movie: IMovie) => dispatch(editMovie(movie)),
+    (movie: IMovie) => dispatch(updateMovieAsync(movie)),
     [dispatch]
   );
 
   const removingMovie = useCallback(
-    (id: number) => dispatch(removeMovie(id)),
+    (id: number) => dispatch(deleteMovieAsync(id)),
     [dispatch]
   );
 
@@ -70,49 +65,20 @@ const Movie: React.FC = () => {
   const handleSelect = (value: any) => {
     setState((prevState) => ({
       ...prevState,
-      gender: value.target.value,
+      genderId: value.target.value,
     }));
   };
-
-  const notifySuccess = (action: "editado" | "cadastrado" | "excluído") =>
-    toast.success(`Filme ${action} com sucesso!`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-
-  const notifyError = (message: string) =>
-    toast.error(message, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
 
   const submit = async () => {
     if (actionDefault === "save") {
       addingMovie({
         ...state,
-        date: new Date().toLocaleDateString(),
-        movieId: new Date().getTime(),
       });
-
-      notifySuccess("cadastrado");
       navigate("/");
     }
 
     if (actionDefault === "edit") {
       editingMovie(state);
-      notifySuccess("editado");
       navigate("/");
     }
   };
@@ -127,7 +93,7 @@ const Movie: React.FC = () => {
     }
   };
 
-  const movies: readonly IMovie[] = useSelector(
+  const movies: IMovie[] = useSelector(
     (state: MovieState) => state.movies,
     shallowEqual
   );

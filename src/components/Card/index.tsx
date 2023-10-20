@@ -4,7 +4,7 @@ interface PropsCard {
   id: number;  
   name: string;
   gender: string;
-  date: string ;
+  date: string;
   active: boolean;
   onClick: (number: number) => void;
 }
@@ -27,7 +27,7 @@ function Card(props: PropsCard) {
         <p>{props.active ? 'Ativo' : 'Inativo'}</p>
       </div>
       <div className="content-card-hidden-responsively">
-        <p>{props.date}</p>
+        <p>{new Date(props.date).toLocaleDateString()}</p>
       </div>
     </button>
   );
