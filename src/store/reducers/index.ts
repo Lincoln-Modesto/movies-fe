@@ -6,15 +6,18 @@ const initialState: MovieState = {
   movies: [
     {
       active: 1,
-      date: '15/12/2023',
-      gender: 'Terror',
+      date: "15/12/2023",
+      gender: "Terror",
       id: 1,
-      name: 'Sexta Feira 13'
-    }
+      name: "Sexta Feira 13",
+    },
   ],
 };
 
-const reducer = (state: MovieState = initialState, action: IAction): MovieState => {
+const reducer = (
+  state: MovieState = initialState,
+  action: IAction
+): MovieState => {
   switch (action.type) {
     case ADD_MOVIE:
       return {
@@ -22,14 +25,10 @@ const reducer = (state: MovieState = initialState, action: IAction): MovieState 
         movies: state.movies.concat(action.payload as IMovie),
       };
     case EDIT_MOVIE: {
-      const movieIndex = state.movies.findIndex((movie) => movie.id === (action.payload as IMovie).id);
-      const updatedMovies = state.movies[movieIndex] = action.payload as IMovie
-
       return {
         ...state,
         movies: [
-          ...state.movies,
-          updatedMovies
+          ...state.movies.map((item) => item.id === (action.payload as IMovie).id ? (action.payload as IMovie) : item)
         ]
       };
     }
@@ -45,6 +44,6 @@ const reducer = (state: MovieState = initialState, action: IAction): MovieState 
     default:
       return state;
   }
-}
+};
 
-export default reducer
+export default reducer;

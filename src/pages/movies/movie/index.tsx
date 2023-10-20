@@ -1,16 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IMovie } from "../../../models/movie";
-import { Dispatch } from "redux"
-import { useDispatch } from "react-redux"
-import { addMovie, editMovie, removeMovie } from '../../../store/actions/actionCreators'
+import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import {
+  addMovie,
+  editMovie,
+  removeMovie,
+} from "../../../store/actions/actionCreators";
 import Loader from "../../../components/Loader";
 import arrow_back from "../../../assets/arrow_back.svg";
 import Input from "../../../components/Input";
 import Select from "../../../components/Select";
 import "./styles.scss";
+import { toast } from "react-toastify";
+import { MovieState } from "../../../models/redux";
+import ModalConfirm from "../../../components/Modal";
 
 interface IHandleChange {
   target: {
@@ -20,22 +27,25 @@ interface IHandleChange {
 }
 
 const listGenders = [
-  {label: "Ação", value: "Ação",},
-  {label: "Aventura", value: "Aventura",},
-  {label: "Comédia", value: "Comédia",},
-  {label: "Documentário", value: "Documentário",},
-  {label: "Drama", value: "Drama",},
-  {label: "Fantasia", value: "Fantasia",},
-  {label: "Ficção Científica", value: "Ficção Científica",},
-  {label: "Romance", value: "Romance",},
-  {label: "Suspense", value: "Suspense",},
-  {label: "Terror", value: "Terror",},
-  {label: "Outro", value: "Outro",},
-]
+  { label: "Ação", value: "Ação" },
+  { label: "Aventura", value: "Aventura" },
+  { label: "Comédia", value: "Comédia" },
+  { label: "Documentário", value: "Documentário" },
+  { label: "Drama", value: "Drama" },
+  { label: "Fantasia", value: "Fantasia" },
+  { label: "Ficção Científica", value: "Ficção Científica" },
+  { label: "Romance", value: "Romance" },
+  { label: "Suspense", value: "Suspense" },
+  { label: "Terror", value: "Terror" },
+  { label: "Outro", value: "Outro" },
+];
 
-const Movie: React.FC = () =>{
-  const dispatch: Dispatch<any> = useDispatch()
+const Movie: React.FC = () => {
+  const dispatch: Dispatch<any> = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [actionDefault, setActionDefault] = useState<"save" | "edit">("save");
   const [state, setState] = useState<IMovie>({
     id: 0,
@@ -48,7 +58,17 @@ const Movie: React.FC = () =>{
   const addingMovie = useCallback(
     (movie: IMovie) => dispatch(addMovie(movie)),
     [dispatch]
-  )
+  );
+
+  const editingMovie = useCallback(
+    (movie: IMovie) => dispatch(editMovie(movie)),
+    [dispatch]
+  );
+
+  const removingMovie = useCallback(
+    (id: number) => dispatch(removeMovie(id)),
+    [dispatch]
+  );
 
   const handleChange = ({ target: { name, value } }: IHandleChange) => {
     setState((prevState) => ({
@@ -64,18 +84,83 @@ const Movie: React.FC = () =>{
     }));
   };
 
-  const submit = async () => {
+  const notifySuccess = (action: "editado" | "cadastrado" | "excluído") =>
+    toast.success(`Filme ${action} com sucesso!`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
-    actionDefault
-    addingMovie({
-      ...state,
-      date: new Date().toLocaleString(),
-      id: new Date().getDate()
-    })
+  const notifyError = (message: string) =>
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+  const submit = async () => {
+    if (actionDefault === "save") {
+      addingMovie({
+        ...state,
+        date: new Date().toLocaleDateString(),
+        id: new Date().getTime(),
+      });
+
+      notifySuccess("cadastrado");
+      navigate("/");
+    }
+
+    if (actionDefault === "edit") {
+      editingMovie(state);
+      notifySuccess("editado");
+      navigate("/");
+    }
   };
+
+  const remove = async (deleted: boolean): Promise<void> => {
+    setModalVisible(false);
+
+    if (deleted && id) {
+      removingMovie(Number(id));
+      notifySuccess("excluído");
+      navigate("/");
+    }
+  };
+
+  const movies: readonly IMovie[] = useSelector(
+    (state: MovieState) => state.movies,
+    shallowEqual
+  );
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  useEffect(() => {
+    if (id) {
+      const movie = movies.find((movie) => movie.id === Number(id));
+      if (movie) {
+        setActionDefault("edit");
+        setState(movie);
+      } else {
+        navigate("/error");
+      }
+    }
+  }, [id, movies]);
 
   return (
     <>
+      <ModalConfirm modalVisible={modalVisible} remove={remove} />
       <Loader isLoading={isLoading} />
       <div className="container-home">
         <div className="container-actions">
@@ -83,7 +168,7 @@ const Movie: React.FC = () =>{
             <Link to={`/`}>
               <img src={arrow_back} alt="voltar" />
             </Link>
-            <h1>Novo Filme</h1>
+            <h1>{actionDefault === "save" ? "Novo Filme" : "Editar Filme"}</h1>
           </div>
           <div className="container-form">
             <form action="">
@@ -99,7 +184,7 @@ const Movie: React.FC = () =>{
                 onChange={handleChange}
               />
               <Select
-                label="Nome"
+                label="Gênero"
                 required={true}
                 key={2}
                 value={state.gender}
@@ -114,13 +199,19 @@ const Movie: React.FC = () =>{
                   className="base-button"
                   onClick={submit}
                   type="button"
-                  disabled={
-                    !state.name.trim() ||
-                    !state.gender
-                  }
+                  disabled={!state.name.trim() || !state.gender}
                 >
                   {actionDefault === "save" ? "Cadastrar" : "Editar"}
                 </button>
+                {actionDefault === "edit" && (
+                  <button
+                    className="base-button button-remove"
+                    onClick={openModal}
+                    type="button"
+                  >
+                    Excluir
+                  </button>
+                )}
               </div>
             </form>
           </div>
@@ -128,6 +219,6 @@ const Movie: React.FC = () =>{
       </div>
     </>
   );
-}
+};
 
 export default Movie;

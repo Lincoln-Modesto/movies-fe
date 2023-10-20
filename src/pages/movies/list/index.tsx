@@ -40,7 +40,7 @@ const List: React.FC = () => {
             <div className="container-list-description">
               <h3 className="content-card">Nome</h3>
               <h3 className="content-card">Gênero</h3>
-              <h3 className="content-card content-card-hidden-responsively">Ativo</h3>
+              <h3 className="content-card content-card-hidden-responsively">Status</h3>
               <h3 className="content-card content-card-hidden-responsively">Data de Criação</h3>
             </div>
             {movies.length &&

@@ -25,6 +25,10 @@ const router = createBrowserRouter([
     path: "/filme/:id",
     element: <Movie />,
   },
+  {
+    path: "/error",
+    element: <Fallback />,
+  },
 ]);
 
 export default router;
