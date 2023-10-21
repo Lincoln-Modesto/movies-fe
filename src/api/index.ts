@@ -7,7 +7,8 @@ import {
     HttpStatusCode,
   } from "../models/api";
   
-  const URL = "http://localhost:11467/api/Movies";
+  const URL = "http://localhost:11467/api/Movies" // For Api with IIS;
+  //const URL = "http://localhost:32768/api/Movies" // For Api with Docker;
   
   export interface HttpApiClientJSONResponse<T> {
     data: T;
